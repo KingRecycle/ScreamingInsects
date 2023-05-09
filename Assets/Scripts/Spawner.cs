@@ -8,16 +8,19 @@ namespace CharlieMadeAThing.ScreamingInsects
     public class Spawner : MonoBehaviour
     {
         [SerializeField] Insect insectPrefab;
-        [SerializeField] int insectCount;
         [SerializeField] BoxCollider2D spawnArea;
         [SerializeField] LineRendererPooler lineRendererPooler;
+        [SerializeField] int insectCount;
+        [SerializeField] float insectSpeed;
+        [SerializeField] float insectScreamRadius;
+        
         List<Insect> _insects = new List<Insect>();
 
         void Start() {
             for ( var i = 0; i < insectCount; i++ ) {
                 var insect = Instantiate( insectPrefab );
                 insect.transform.position = GetRandomPositionInSpawnArea();
-                insect.Init( lineRendererPooler );
+                insect.Init( insectSpeed, insectScreamRadius, lineRendererPooler );
                 _insects.Add( insect );
             }
         }

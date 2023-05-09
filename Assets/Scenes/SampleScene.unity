@@ -926,9 +926,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   insectPrefab: {fileID: 9013620284519850185, guid: 1d578cfec85254541bf2722930a11fb1, type: 3}
-  insectCount: 2000
   spawnArea: {fileID: 1626669215}
   lineRendererPooler: {fileID: 1626669216}
+  insectCount: 2000
+  insectSpeed: 50
+  insectScreamRadius: 20
 --- !u!61 &1626669215
 BoxCollider2D:
   m_ObjectHideFlags: 0

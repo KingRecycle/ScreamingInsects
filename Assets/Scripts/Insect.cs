@@ -10,6 +10,7 @@ public class Insect : MonoBehaviour {
     [SerializeField] float screamRadius;
     [SerializeField] float speed;
     [SerializeField] InsectTarget target;
+    [SerializeField] bool shouldShowScream;
 
     [Header("Insect Knowledge")]
     [SerializeField] float distanceToNest;
@@ -25,7 +26,7 @@ public class Insect : MonoBehaviour {
     
     public float ScreamRadius => screamRadius;
     
-    public void Init( LineRendererPooler linePooler ) {
+    public void Init( float insectSpeed, float insectScreamRadius, LineRendererPooler linePooler ) {
         //Random initial direction, target, and distances to nest and food
         var startTarget = UnityEngine.Random.Range( 0, 2 ) == 0 ? InsectTarget.Nest : InsectTarget.Food;
         ChangeTarget( startTarget );
@@ -33,6 +34,8 @@ public class Insect : MonoBehaviour {
         distanceToNest = UnityEngine.Random.Range( 0, 500 );
         distanceToFood = UnityEngine.Random.Range( 0, 500 );
         lineRendererPooler = linePooler;
+        speed = insectSpeed;
+        screamRadius = insectScreamRadius;
         
     }
 
@@ -55,7 +58,7 @@ public class Insect : MonoBehaviour {
             var screamColor = screamTarget == InsectTarget.Nest ? Color.red : Color.green;
             var didUpdate = insect.ListenToScream( transform.position, screamTarget, screamTargetDistance + screamRadius );
 
-            if ( didUpdate ) {
+            if ( didUpdate && shouldShowScream ) {
                 if ( !lineRendererPooler ) return;
                 StartCoroutine( DrawLine( insect.transform.position, screamColor ) );
             }
