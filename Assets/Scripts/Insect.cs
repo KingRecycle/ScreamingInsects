@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CharlieMadeAThing.ScreamingInsects;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -19,7 +20,6 @@ public class Insect : MonoBehaviour {
 
     [Header("Insect References")]
     [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] LineRenderer lineRendererPrefab;
     [SerializeField] Rigidbody2D rBody2D;
     [SerializeField] LineRendererPooler lineRendererPooler;
     Collider2D[] _screamHits = new Collider2D[50];
@@ -27,6 +27,7 @@ public class Insect : MonoBehaviour {
     public float ScreamRadius => screamRadius;
     
     public void Init( float insectSpeed, float insectScreamRadius, LineRendererPooler linePooler ) {
+        Physics2D.autoSyncTransforms = false;
         //Random initial direction, target, and distances to nest and food
         var startTarget = UnityEngine.Random.Range( 0, 2 ) == 0 ? InsectTarget.Nest : InsectTarget.Food;
         ChangeTarget( startTarget );
@@ -40,31 +41,32 @@ public class Insect : MonoBehaviour {
     }
 
     void Update() {
-        MoveInDirection( Time.deltaTime );
-        distanceToNest += speed * Time.deltaTime;
-        distanceToFood += speed * Time.deltaTime;
+        var dt = Time.deltaTime;
+        MoveInDirection( dt );
+        distanceToNest += speed * dt;
+        distanceToFood += speed * dt;
+        Physics2D.SyncTransforms();
     }
 
     void DoScream( InsectTarget screamTarget ) {
-        Array.Clear( _screamHits, 0, _screamHits.Length );
         var hitCount = Physics2D.OverlapCircleNonAlloc( transform.position, screamRadius, _screamHits );
         if ( hitCount == 0 ) return;
 
-        foreach ( var hit in _screamHits ) {
+        for ( var i = 0; i < hitCount; i++ ) {
+            var hit = _screamHits[i];
             if ( !hit || !hit.CompareTag( "Insect" ) ) continue;
 
             var insect = hit.GetComponent<Insect>();
             var screamTargetDistance = screamTarget == InsectTarget.Nest ? distanceToNest : distanceToFood;
             var screamColor = screamTarget == InsectTarget.Nest ? Color.red : Color.green;
-            var didUpdate = insect.ListenToScream( transform.position, screamTarget, screamTargetDistance + screamRadius );
+            var didUpdate =
+                insect.ListenToScream( transform.position, screamTarget, screamTargetDistance + screamRadius );
 
             if ( didUpdate && shouldShowScream ) {
                 if ( !lineRendererPooler ) return;
                 StartCoroutine( DrawLine( insect.transform.position, screamColor ) );
             }
-            
         }
-        
     }
 
     IEnumerator DrawLine( Vector3 targetPosition, Color screamColor ) {
@@ -73,7 +75,7 @@ public class Insect : MonoBehaviour {
         lineRenderer.SetPosition( 1, targetPosition );
         lineRenderer.startColor = screamColor;
         lineRenderer.endColor = lineRenderer.startColor;
-        yield return new WaitForSeconds( 0.1f );
+        yield return new WaitForSeconds( 0.05f );
         lineRendererPooler.ReleaseLineRenderer( lineRenderer );
     }
 
@@ -143,6 +145,7 @@ public class Insect : MonoBehaviour {
             //Reflect move direction
             directionOfMovement = Vector3.Reflect( directionOfMovement, other.transform.up );
         }
+        
     }
 }
 
