@@ -39,10 +39,11 @@ namespace CharlieMadeAThing.ScreamingInsects.ScreamingInsects {
     
         void Update() {
             var dt = Time.deltaTime;
+            Physics2D.SyncTransforms();
             MoveInDirection( dt );
             distanceToNest += speed * dt;
             distanceToFood += speed * dt;
-            Physics2D.SyncTransforms();
+            
         }
 
         void DoScream( InsectTarget screamTarget ) {

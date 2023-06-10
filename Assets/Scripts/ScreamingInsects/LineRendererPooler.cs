@@ -4,11 +4,12 @@ using UnityEngine.Pool;
 namespace CharlieMadeAThing.ScreamingInsects.ScreamingInsects {
     public class LineRendererPooler : MonoBehaviour {
         
-        ObjectPool<LineRenderer> _lineRendererPool;
+        IObjectPool<LineRenderer> _lineRendererPool;
         [SerializeField] LineRenderer lineRendererPrefab;
 
         void Awake() {
-            _lineRendererPool = new ObjectPool<LineRenderer>( CreateLineRenderer, OnTakeLineRendererFromPool, OnReturnLineRendererToPool );
+            _lineRendererPool = new ObjectPool<LineRenderer>( CreateLineRenderer, OnTakeLineRendererFromPool, OnReturnLineRendererToPool, collectionCheck: false, defaultCapacity: 500 );
+            
         }
 
         LineRenderer CreateLineRenderer() {
