@@ -489,7 +489,7 @@ MonoBehaviour:
   insectPrefab: {fileID: 9013620284519850185, guid: 1d578cfec85254541bf2722930a11fb1, type: 3}
   spawnArea: {fileID: 1626669215}
   lineRendererPooler: {fileID: 1626669216}
-  insectCount: 1000
+  insectCount: 750
   insectSpeed: 25
   insectScreamRadius: 15
 --- !u!1 &2069588425

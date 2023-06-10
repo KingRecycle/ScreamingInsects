@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Pool;
 
-namespace CharlieMadeAThing.ScreamingInsects {
+namespace CharlieMadeAThing.ScreamingInsects.ScreamingInsects {
     public class LineRendererPooler : MonoBehaviour {
         
         ObjectPool<LineRenderer> _lineRendererPool;
